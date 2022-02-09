@@ -14,8 +14,8 @@ for i in range(6):
                 possibility.append(colors[n])
                 possibilities.append(possibility)
 
-#password = random.choice(possibilities)
-password = [colors[4],colors[2],colors[2],colors[3]]
+password = random.choice(possibilities)
+
 def giveAnswer(guess):
     Black = 0
     White = 0
@@ -38,14 +38,18 @@ def MakeGuess(leftOverPossibilities):
     listOfAnswers = []
     for each in leftOverPossibilities:
         listOfAnswers.append(giveAnswer(each))
+
+
+
+
 print(password)
 print()
-guess1 = [colors[1],colors[2],colors[3],colors[4]]
-guess2 = [colors[5],colors[5],colors[1],colors[2]]
-guess3 = [colors[2],colors[3],colors[4],colors[5]]
-guess4 = [colors[1],colors[3],colors[1],colors[1]]
-guess5 = [colors[5],colors[5],colors[5],colors[5]]
-guess6 = [colors[4],colors[2],colors[2],colors[3]]
+guess1 = random.choice(possibilities)
+guess2 = random.choice(possibilities)
+guess3 = random.choice(possibilities)
+guess4 = random.choice(possibilities)
+guess5 = random.choice(possibilities)
+guess6 = random.choice(possibilities)
 print(guess1)
 print(giveAnswer(guess1))
 print(guess2)
