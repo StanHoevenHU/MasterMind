@@ -1,64 +1,131 @@
 import random
 
-colors = ["Green", "Yellow", "Red", "Blue", "black","Purple"]
+colors = ["Rood", "Blauw", "Groen", "Geel", "Zwart","Wit"] 
+def createAllPossible():
 
-possibilities = []
-for i in range(6):
-    for j in range(6):
-        for k in range(6):
-            for n in range(6):
-                possibility = []
-                possibility.append(colors[i])
-                possibility.append(colors[j])
-                possibility.append(colors[k])
-                possibility.append(colors[n])
-                possibilities.append(possibility)
+   
+    possibilities = []
 
-password = random.choice(possibilities)
+    for firstColor in range(6):
+        for secondColor in range(6):
+            for thirdColor in range(6):
+                for forthColor in range(6):
+                    possibility = []
+                    possibility.append(colors.copy()[firstColor])
+                    possibility.append(colors.copy()[secondColor])
+                    possibility.append(colors.copy()[thirdColor])
+                    possibility.append(colors.copy()[forthColor])
+                    possibilities.append(possibility)
+    
+    return possibilities
 
-def giveAnswer(guess):
+def giveAnswer(guess,answer):
+
     Black = 0
     White = 0
-    passwordCopy = password.copy()
-    for i in range(len(guess)):
-        if passwordCopy[i] == guess[i]:
+    passwordCopy = answer.copy()
+    guessCopy = guess.copy()
+
+    for i in range(len(guessCopy)):
+        if passwordCopy[i] == guessCopy[i]:
             Black += 1
             passwordCopy[i] = "Password Checked"
-            guess[i] = "Guess Checked"
-    
-    for i in range(len(guess)):        
-        if guess[i] in passwordCopy:
+            guessCopy[i] = "Guess Checked"
+
+    for i in range(len(guessCopy)):        
+        if guessCopy[i] in passwordCopy:
             White += 1
-            passwordCopy[password.index(guess[i])] = "Password Checked"
-            guess[i] = "Guess Checked"
+            passwordCopy[passwordCopy.index(guessCopy[i])] = "Password Checked"
+            guessCopy[i] = "Guess Checked"
     return [Black, White]
 
+def generatePossibleAnswers(guess,leftOvers):
 
-def MakeGuess(leftOverPossibilities):
-    listOfAnswers = []
-    for each in leftOverPossibilities:
-        listOfAnswers.append(giveAnswer(each))
+    listOfPossibilities = dict()
+
+    for each in leftOvers:
+        givenResponse = str(giveAnswer(guess,each))
+
+        if givenResponse in list(listOfPossibilities.keys()):
+            listOfPossibilities[givenResponse] += 1
+        else:
+            listOfPossibilities[givenResponse] = 1
+
+    return listOfPossibilities
+
+def generateNextMoveMostParts(allPossibilities):
+    export = ""
+    currentLongest = ""
+
+    for each in allPossibilities:
+        if len(each[1]) > len(currentLongest):
+            currentLongest = each[1]
+            export = each
+    return export
+
+
+def generateNextMoveWorstCase(allPossibilities):
+
+    worstCase = len(allPossibilities)
+
+    for each in allPossibilities:
+        highestValue = max(each[1].values())
+
+        if highestValue < worstCase:
+            worstCase = highestValue
+    
+    for each in allPossibilities:
+        if worstCase in each[1].values():
+            return each
+    
+def possibleMatrix(leftOverpossible):
+    possibilityMatrix2 = []
+    for each in leftOverpossible:
+            possibilityMatrix2.append([each,generatePossibleAnswers(each,leftOverpossible)])
+    return possibilityMatrix2
+
+def MakeGuess(leftOverPossibilities, password, n):
+    if len(leftOverPossibilities) <= 1:
+        return leftOverPossibilities[0],n
+    else:
+        listOfAnswers = []
+        if n != 1:
+            possibilityMatrix = []
+            for each in leftOverPossibilities:
+                possibilityMatrix.append([each,generatePossibleAnswers(each,leftOverPossibilities)])
+        else:
+            possibilityMatrix = possibleMatrixResponse
+        
+        answerToGuess = generateNextMoveWorstCase(possibilityMatrix)[0]
+
+        """
+        answerToGuess = leftOverPossibilities[0]
+        """
+        theResponse = giveAnswer(answerToGuess,password)
+
+        if theResponse == [4,0]:
+            return answerToGuess,n
+
+        for each in leftOverPossibilities:
+            checkResponse = giveAnswer(each,answerToGuess)
+            if theResponse == checkResponse:
+                listOfAnswers.append(each)
+
+        return MakeGuess(listOfAnswers, password, n+1)
 
 
 
+possibleList = createAllPossible()
+print("Kies de kleuren op basis van het indexgetal.\n1: Rood 2: Blauw 3: Groen 4: Geel 5: Zwart 6: Wit")
+Color1 = int(input("Kleur 1\n-")) % 6 - 1
+Color2 = int(input("Kleur 2\n-")) % 6 - 1
+Color3 = int(input("Kleur 3\n-")) % 6 - 1
+Color4 = int(input("Kleur 4\n-")) % 6 - 1
 
-print(password)
-print()
-guess1 = random.choice(possibilities)
-guess2 = random.choice(possibilities)
-guess3 = random.choice(possibilities)
-guess4 = random.choice(possibilities)
-guess5 = random.choice(possibilities)
-guess6 = random.choice(possibilities)
-print(guess1)
-print(giveAnswer(guess1))
-print(guess2)
-print(giveAnswer(guess2))
-print(guess3)
-print(giveAnswer(guess3))
-print(guess4)
-print(giveAnswer(guess4))
-print(guess5)
-print(giveAnswer(guess5))
-print(guess6)
-print(giveAnswer(guess6))
+password = [colors.copy()[Color1],colors.copy()[Color2],colors.copy()[Color3],colors.copy()[Color4]]
+
+possibleMatrixResponse = possibleMatrix(possibleList)
+
+outcome = MakeGuess(possibleList,password,1)
+
+print(f"Gevonden in {outcome[1]} pogingen. het antwoord is {outcome[0]}")
