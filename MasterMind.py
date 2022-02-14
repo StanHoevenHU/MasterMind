@@ -1,9 +1,9 @@
 import random
 
 colors = ["Rood", "Blauw", "Groen", "Geel", "Zwart","Wit"] 
+
 def createAllPossible():
 
-   
     possibilities = []
 
     for firstColor in range(6):
@@ -37,6 +37,7 @@ def giveAnswer(guess,answer):
             White += 1
             passwordCopy[passwordCopy.index(guessCopy[i])] = "Password Checked"
             guessCopy[i] = "Guess Checked"
+    
     return [Black, White]
 
 def generatePossibleAnswers(guess,leftOvers):
@@ -48,12 +49,14 @@ def generatePossibleAnswers(guess,leftOvers):
 
         if givenResponse in list(listOfPossibilities.keys()):
             listOfPossibilities[givenResponse] += 1
+    
         else:
             listOfPossibilities[givenResponse] = 1
 
     return listOfPossibilities
 
 def generateNextMoveMostParts(allPossibilities):
+    
     export = ""
     currentLongest = ""
 
@@ -61,6 +64,7 @@ def generateNextMoveMostParts(allPossibilities):
         if len(each[1]) > len(currentLongest):
             currentLongest = each[1]
             export = each
+    
     return export
 
 
@@ -79,28 +83,50 @@ def generateNextMoveWorstCase(allPossibilities):
             return each
     
 def possibleMatrix(leftOverpossible):
-    possibilityMatrix2 = []
+    
+    possibleMatrix = []
+    
     for each in leftOverpossible:
-            possibilityMatrix2.append([each,generatePossibleAnswers(each,leftOverpossible)])
-    return possibilityMatrix2
+            possibleMatrix.append([each,generatePossibleAnswers(each,leftOverpossible)])
+    
+    return possibleMatrix
 
-def MakeGuess(leftOverPossibilities, password, n):
+def generateMatrix(leftOverPossibilities,n):
+    
+    if n != 1:
+        possibilityMatrix = []
+        
+        for each in leftOverPossibilities:
+            possibilityMatrix.append([each,generatePossibleAnswers(each,leftOverPossibilities)])
+    
+    else:
+        possibilityMatrix = possibleMatrixResponse
+    
+    return possibilityMatrix
+    
+
+def MakeGuess(leftOverPossibilities, password, n, gameMode):
+
     if len(leftOverPossibilities) <= 1:
         return leftOverPossibilities[0],n
+    
     else:
         listOfAnswers = []
-        if n != 1:
-            possibilityMatrix = []
-            for each in leftOverPossibilities:
-                possibilityMatrix.append([each,generatePossibleAnswers(each,leftOverPossibilities)])
-        else:
-            possibilityMatrix = possibleMatrixResponse
-        
-        answerToGuess = generateNextMoveWorstCase(possibilityMatrix)[0]
 
-        """
-        answerToGuess = leftOverPossibilities[0]
-        """
+        if gameMode.lower() == "worst case":
+            print('Worst case')
+            possibilityMatrix = generateMatrix(leftOverPossibilities,n)
+            answerToGuess = generateNextMoveWorstCase(possibilityMatrix)[0]
+        
+        elif gameMode.lower() == "most parts":
+            print('Most part')
+            possibilityMatrix = generateMatrix(leftOverPossibilities,n)
+            answerToGuess = generateNextMoveWorstCase(possibilityMatrix)[0]
+        
+        else:
+            print('Simple')
+            answerToGuess = leftOverPossibilities[0]
+        
         theResponse = giveAnswer(answerToGuess,password)
 
         if theResponse == [4,0]:
@@ -111,21 +137,14 @@ def MakeGuess(leftOverPossibilities, password, n):
             if theResponse == checkResponse:
                 listOfAnswers.append(each)
 
-        return MakeGuess(listOfAnswers, password, n+1)
-
-
+        return MakeGuess(listOfAnswers, password, n+1, gameMode)
 
 possibleList = createAllPossible()
-print("Kies de kleuren op basis van het indexgetal.\n1: Rood 2: Blauw 3: Groen 4: Geel 5: Zwart 6: Wit")
-Color1 = int(input("Kleur 1\n-")) % 6 - 1
-Color2 = int(input("Kleur 2\n-")) % 6 - 1
-Color3 = int(input("Kleur 3\n-")) % 6 - 1
-Color4 = int(input("Kleur 4\n-")) % 6 - 1
 
-password = [colors.copy()[Color1],colors.copy()[Color2],colors.copy()[Color3],colors.copy()[Color4]]
+password = random.choice(possibleList)
+print(password)
 
 possibleMatrixResponse = possibleMatrix(possibleList)
 
-outcome = MakeGuess(possibleList,password,1)
-
+outcome = MakeGuess(possibleList,password,1,"")
 print(f"Gevonden in {outcome[1]} pogingen. het antwoord is {outcome[0]}")
