@@ -1,150 +1,116 @@
-import random
+import json
 
-colors = ["Rood", "Blauw", "Groen", "Geel", "Zwart","Wit"] 
+colors = ["Blauw", "Geel", "Groen", "Rood", "Wit", "Zwart"] 
 
 def createAllPossible():
 
-    possibilities = []
+    possibilities = list()
 
-    for firstColor in range(6):
-        for secondColor in range(6):
-            for thirdColor in range(6):
-                for forthColor in range(6):
-                    possibility = []
-                    possibility.append(colors.copy()[firstColor])
-                    possibility.append(colors.copy()[secondColor])
-                    possibility.append(colors.copy()[thirdColor])
-                    possibility.append(colors.copy()[forthColor])
-                    possibilities.append(possibility)
-    
+    for firstColor in range(len(colors)):
+        for secondColor in range(len(colors)):
+            for thirdColor in range(len(colors)):
+                for forthColor in range(len(colors)):
+                    possibilities.append([colors.copy()[firstColor],colors.copy()[secondColor],colors.copy()[thirdColor],colors.copy()[forthColor]])
+
     return possibilities
 
 def giveAnswer(guess,answer):
 
     Black = 0
     White = 0
-    passwordCopy = answer.copy()
+    answerCopy = answer.copy()
     guessCopy = guess.copy()
 
     for i in range(len(guessCopy)):
-        if passwordCopy[i] == guessCopy[i]:
+        if answerCopy[i] == guessCopy[i]:
             Black += 1
-            passwordCopy[i] = "Password Checked"
+            answerCopy[i] = "Password Checked"
             guessCopy[i] = "Guess Checked"
 
     for i in range(len(guessCopy)):        
-        if guessCopy[i] in passwordCopy:
+        if guessCopy[i] in answerCopy:
             White += 1
-            passwordCopy[passwordCopy.index(guessCopy[i])] = "Password Checked"
+            answerCopy[answerCopy.index(guessCopy[i])] = "Password Checked"
             guessCopy[i] = "Guess Checked"
     
-    return [Black, White]
+    return Black, White
 
-def generatePossibleAnswers(guess,leftOvers):
-
-    listOfPossibilities = dict()
-
-    for each in leftOvers:
-        givenResponse = str(giveAnswer(guess,each))
-
-        if givenResponse in list(listOfPossibilities.keys()):
-            listOfPossibilities[givenResponse] += 1
+def generateNextMoveMostParts(leftOverPossibilitiesMatrix):
     
-        else:
-            listOfPossibilities[givenResponse] = 1
-
-    return listOfPossibilities
-
-def generateNextMoveMostParts(allPossibilities):
-    
-    export = ""
     currentLongest = ""
 
-    for each in allPossibilities:
-        if len(each[1]) > len(currentLongest):
-            currentLongest = each[1]
-            export = each
-    
+    for item in leftOverPossibilitiesMatrix:
+        if len(item[1]) >= len(currentLongest):
+            currentLongest = item[1]
+            export = item[0]
+
     return export
 
+def generateNextMoveWorstCase(leftOverPossibilitiesMatrix):
 
-def generateNextMoveWorstCase(allPossibilities):
+    worstCase = len(leftOverPossibilitiesMatrix)
 
-    worstCase = len(allPossibilities)
-
-    for each in allPossibilities:
-        highestValue = max(each[1].values())
+    for item in leftOverPossibilitiesMatrix:
+        highestValue = max(item[1].values())
 
         if highestValue < worstCase:
             worstCase = highestValue
     
-    for each in allPossibilities:
-        if worstCase in each[1].values():
-            return each
-    
-def possibleMatrix(leftOverpossible):
-    
-    possibleMatrix = []
-    
-    for each in leftOverpossible:
-            possibleMatrix.append([each,generatePossibleAnswers(each,leftOverpossible)])
-    
-    return possibleMatrix
+    for item in leftOverPossibilitiesMatrix:
+        if worstCase == max(item[1].values()):
+            return item[0]
 
 def generateMatrix(leftOverPossibilities,n):
     
     if n != 1:
-        possibilityMatrix = []
+        possibilityMatrix = list()
         
-        for each in leftOverPossibilities:
-            possibilityMatrix.append([each,generatePossibleAnswers(each,leftOverPossibilities)])
-    
+        for item in leftOverPossibilities:
+            dictOfPossibilities = dict()
+
+            for each in leftOverPossibilities:
+                givenResponse = str(giveAnswer(item,each))
+
+                if givenResponse in list(dictOfPossibilities.keys()):
+                    dictOfPossibilities[givenResponse] += 1
+            
+                else:
+                    dictOfPossibilities[givenResponse] = 1
+
+            possibilityMatrix.append([item,dictOfPossibilities])
+
     else:
+
+        with open("firstMatrix.json", "r") as JSONFile:
+            possibleMatrixResponse = json.load(JSONFile)
+
         possibilityMatrix = possibleMatrixResponse
     
     return possibilityMatrix
     
+def MakeGuess(leftOverPossibilities, password, gameMode = "", n = 1):
+    
+    listOfAnswers = list()
 
-def MakeGuess(leftOverPossibilities, password, n, gameMode):
+    if gameMode.lower() == "worst case":
+        possibilityMatrix = generateMatrix(leftOverPossibilities,n)
+        answerToGuess = generateNextMoveWorstCase(possibilityMatrix)
 
-    if len(leftOverPossibilities) <= 1:
-        return leftOverPossibilities[0],n
+    elif gameMode.lower() == "most parts":
+        possibilityMatrix = generateMatrix(leftOverPossibilities,n)
+        answerToGuess = generateNextMoveMostParts(possibilityMatrix)
     
     else:
-        listOfAnswers = []
+        answerToGuess = leftOverPossibilities[0]
 
-        if gameMode.lower() == "worst case":
-            print('Worst case')
-            possibilityMatrix = generateMatrix(leftOverPossibilities,n)
-            answerToGuess = generateNextMoveWorstCase(possibilityMatrix)[0]
-        
-        elif gameMode.lower() == "most parts":
-            print('Most part')
-            possibilityMatrix = generateMatrix(leftOverPossibilities,n)
-            answerToGuess = generateNextMoveWorstCase(possibilityMatrix)[0]
-        
-        else:
-            print('Simple')
-            answerToGuess = leftOverPossibilities[0]
-        
-        theResponse = giveAnswer(answerToGuess,password)
+    Response = giveAnswer(answerToGuess,password)
 
-        if theResponse == [4,0]:
-            return answerToGuess,n
+    if Response == (4,0):
+        return answerToGuess,n
 
-        for each in leftOverPossibilities:
-            checkResponse = giveAnswer(each,answerToGuess)
-            if theResponse == checkResponse:
-                listOfAnswers.append(each)
+    for item in leftOverPossibilities:
+        checkResponse = giveAnswer(item,answerToGuess)
+        if Response == checkResponse:
+            listOfAnswers.append(item)
 
-        return MakeGuess(listOfAnswers, password, n+1, gameMode)
-
-possibleList = createAllPossible()
-
-password = random.choice(possibleList)
-print(password)
-
-possibleMatrixResponse = possibleMatrix(possibleList)
-
-outcome = MakeGuess(possibleList,password,1,"")
-print(f"Gevonden in {outcome[1]} pogingen. het antwoord is {outcome[0]}")
+    return MakeGuess(listOfAnswers, password, gameMode, n+1)
