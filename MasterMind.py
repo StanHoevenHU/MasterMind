@@ -1,8 +1,7 @@
 import json
+import random
 
-colors = ["Blauw", "Geel", "Groen", "Rood", "Wit", "Zwart"] 
-
-def createAllPossible():
+def createAllPossible(colors):
 
     possibilities = list()
 
@@ -100,8 +99,11 @@ def MakeGuess(leftOverPossibilities, password, gameMode = "", n = 1):
         possibilityMatrix = generateMatrix(leftOverPossibilities,n)
         answerToGuess = generateNextMoveMostParts(possibilityMatrix)
     
-    else:
+    elif gameMode.lower() == "simple":
         answerToGuess = leftOverPossibilities[0]
+        
+    else:
+        answerToGuess = random.choice(leftOverPossibilities)
 
     Response = giveAnswer(answerToGuess,password)
 
