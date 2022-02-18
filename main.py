@@ -3,7 +3,9 @@ import time
 
 colors = ["Blauw", "Geel", "Groen", "Rood", "Wit", "Zwart"] 
 
-while True:
+
+
+while True: # Loop om te kiezen met hoeveel kleuren je het spel speelt.
     try:
         amountOfColors = int(input("Met hoeveel kleuren ga je spelen?"))
         if 4 <= amountOfColors <= 6:
@@ -14,7 +16,14 @@ while True:
 
 possibleList = createAllPossible(colors[:amountOfColors])
 
+""" 
+Opzet van de tests van de strategiën:
 
+    - Spel wordt gespeeld voor ieder mogelijk antwoord van het spel.
+    - Alle aantal pogingen worden onthouden in een dictionary.
+    - Het gemiddelde wordt berekend over alle pogingen.
+    - Tijd wordt gemeten om het aantal seconden te meten hoelang de strategiën duren.
+"""
 print("\nStarting random strategy\n")
 start = time.time()
 totalAttempts = 0
