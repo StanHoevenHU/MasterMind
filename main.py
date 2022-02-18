@@ -22,7 +22,6 @@ attemptTableRandom = dict()
 
 for item in possibleList:
     outcome = MakeGuess(possibleList,item)
-    #print(f"Het antwoord is {item}. De bot vond in {outcome[1]} pogingen het volgende antwoord: {outcome[0]}")
     totalAttempts += outcome[1]
     if outcome[1] in list(attemptTableRandom.keys()):
         attemptTableRandom[outcome[1]] += 1
@@ -42,7 +41,6 @@ attemptTableSimple = dict()
 
 for item in possibleList:
     outcome = MakeGuess(possibleList,item, "simple")
-    #print(f"Het antwoord is {item}. De bot vond in {outcome[1]} pogingen het volgende antwoord: {outcome[0]}")
     totalAttempts += outcome[1]
     if outcome[1] in list(attemptTableSimple.keys()):
         attemptTableSimple[outcome[1]] += 1
@@ -50,8 +48,6 @@ for item in possibleList:
         attemptTableSimple[outcome[1]] = 1
 
 end = time.time()
-
-
 
 
 print(f"finished Simple in {end - start} seconds.")
@@ -65,7 +61,6 @@ attemptTableMostParts = dict()
 
 for item in possibleList:
     outcome = MakeGuess(possibleList,item,"most parts")
-    #print(f"Het antwoord is {item}. De bot vond in {outcome[1]} pogingen het volgende antwoord: {outcome[0]}")
     totalAttempts += outcome[1]
     if outcome[1] in list(attemptTableMostParts.keys()):
         attemptTableMostParts[outcome[1]] += 1
@@ -85,7 +80,6 @@ attemptTableWorstCase = dict()
 
 for item in possibleList:
     outcome = MakeGuess(possibleList,item,"worst case")
-    #print(f"Het antwoord is {item}. De bot vond in {outcome[1]} pogingen het volgende antwoord: {outcome[0]}")
     totalAttempts += outcome[1]
     if outcome[1] in list(attemptTableWorstCase.keys()):
         attemptTableWorstCase[outcome[1]] += 1

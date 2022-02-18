@@ -39,7 +39,7 @@ def generateNextMoveMostParts(leftOverPossibilitiesMatrix):
     currentLongest = ""
 
     for item in leftOverPossibilitiesMatrix:
-        if len(item[1]) >= len(currentLongest):
+        if len(item[1]) > len(currentLongest):
             currentLongest = item[1]
             export = item[0]
 
