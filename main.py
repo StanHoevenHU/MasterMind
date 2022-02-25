@@ -7,7 +7,7 @@ colors = ["Blauw", "Geel", "Groen", "Rood", "Wit", "Zwart"]
 
 while True: # Loop om te kiezen met hoeveel kleuren je het spel speelt.
     try:
-        amount_of_colors = int(input("Met hoeveel kleuren ga je spelen?"))
+        amount_of_colors = int(input("Met hoeveel kleuren ga je spelen?\n(Je kan kiezen om met 4, 5 of 6 kleuren te spelen)\n"))
         if 4 <= amount_of_colors <= 6:
             break
         print("waarde moet tussen 4 en 6")

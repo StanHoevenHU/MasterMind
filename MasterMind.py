@@ -144,6 +144,8 @@ def make_guess(left_over_possibilities, password, game_mode = "", n = 1):
         
     else:
         answer_to_guess = random.choice(left_over_possibilities)
+        # Variant op simple stategie waarbij je niet hetzelfde pad kiest.
+        # Dit is beter omdat hierbij veel stappen uit andere strategiën pakt in plaats van de lijst 
 
     response = give_answer(answer_to_guess,password)
 
