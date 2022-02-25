@@ -1,4 +1,4 @@
-from MasterMind import *
+from mastermind import *
 import time
 
 colors = ["Blauw", "Geel", "Groen", "Rood", "Wit", "Zwart"] 
@@ -7,14 +7,14 @@ colors = ["Blauw", "Geel", "Groen", "Rood", "Wit", "Zwart"]
 
 while True: # Loop om te kiezen met hoeveel kleuren je het spel speelt.
     try:
-        amountOfColors = int(input("Met hoeveel kleuren ga je spelen?"))
-        if 4 <= amountOfColors <= 6:
+        amount_of_colors = int(input("Met hoeveel kleuren ga je spelen?"))
+        if 4 <= amount_of_colors <= 6:
             break
         print("waarde moet tussen 4 en 6")
     except:
         print("voer een getal in.")
 
-possibleList = createAllPossible(colors[:amountOfColors])
+possible_list = create_all_possible(colors[:amount_of_colors])
 
 """ 
 Opzet van de tests van de strategiën:
@@ -26,78 +26,78 @@ Opzet van de tests van de strategiën:
 """
 print("\nStarting random strategy\n")
 start = time.time()
-totalAttempts = 0
-attemptTableRandom = dict()
+total_attempts = 0
+attempt_table_random = dict()
 
-for item in possibleList:
-    outcome = MakeGuess(possibleList,item)
-    totalAttempts += outcome[1]
-    if outcome[1] in list(attemptTableRandom.keys()):
-        attemptTableRandom[outcome[1]] += 1
+for item in possible_list:
+    outcome = make_guess(possible_list,item)
+    total_attempts += outcome[1]
+    if outcome[1] in list(attempt_table_random.keys()):
+        attempt_table_random[outcome[1]] += 1
     else:
-        attemptTableRandom[outcome[1]] = 1
+        attempt_table_random[outcome[1]] = 1
 
 end = time.time()
 
 print(f"finished random in {end - start} seconds.")
-print(f"Average: {totalAttempts/len(possibleList)}.")
-print(f"Attempt count: {attemptTableRandom}.")
+print(f"Average: {total_attempts/len(possible_list)}.")
+print(f"Attempt count: {attempt_table_random}.")
 
 print("\nStarting simple strategy\n")
 start = time.time()
-totalAttempts = 0
-attemptTableSimple = dict()
+total_attempts = 0
+attempt_table_simple = dict()
 
-for item in possibleList:
-    outcome = MakeGuess(possibleList,item, "simple")
-    totalAttempts += outcome[1]
-    if outcome[1] in list(attemptTableSimple.keys()):
-        attemptTableSimple[outcome[1]] += 1
+for item in possible_list:
+    outcome = make_guess(possible_list,item, "simple")
+    total_attempts += outcome[1]
+    if outcome[1] in list(attempt_table_simple.keys()):
+        attempt_table_simple[outcome[1]] += 1
     else:
-        attemptTableSimple[outcome[1]] = 1
+        attempt_table_simple[outcome[1]] = 1
 
 end = time.time()
 
 
 print(f"finished Simple in {end - start} seconds.")
-print(f"Average: {totalAttempts/len(possibleList)}.")
-print(f"Attempt count: {attemptTableSimple}.")
+print(f"Average: {total_attempts/len(possible_list)}.")
+print(f"Attempt count: {attempt_table_simple}.")
 print("\n\nStarting most parts strategy\n")
 
 start = time.time()
-totalAttempts = 0
-attemptTableMostParts = dict()
+total_attempts = 0
+attempt_table_most_parts = dict()
 
-for item in possibleList:
-    outcome = MakeGuess(possibleList,item,"most parts")
-    totalAttempts += outcome[1]
-    if outcome[1] in list(attemptTableMostParts.keys()):
-        attemptTableMostParts[outcome[1]] += 1
+for item in possible_list:
+    outcome = make_guess(possible_list,item,"most parts")
+    total_attempts += outcome[1]
+    if outcome[1] in list(attempt_table_most_parts.keys()):
+        attempt_table_most_parts[outcome[1]] += 1
     else:
-        attemptTableMostParts[outcome[1]] = 1
+        attempt_table_most_parts[outcome[1]] = 1
 
 end = time.time()
 
 print(f"finished most parts in {end - start} seconds.")
-print(f"Average: {totalAttempts/len(possibleList)}.")
-print(f"Attempt count: {attemptTableMostParts}.")
+print(f"Average: {total_attempts/len(possible_list)}.")
+print(f"Attempt count: {attempt_table_most_parts}.")
 print("\n\nStarting worst case strategy\n")
 
 start = time.time()
-totalAttempts = 0
-attemptTableWorstCase = dict()
+total_attempts = 0
+attempt_table_worst_case = dict()
 
-for item in possibleList:
-    outcome = MakeGuess(possibleList,item,"worst case")
-    totalAttempts += outcome[1]
-    if outcome[1] in list(attemptTableWorstCase.keys()):
-        attemptTableWorstCase[outcome[1]] += 1
+for item in possible_list:
+    outcome = make_guess(possible_list,item,"worst case")
+    total_attempts += outcome[1]
+    if outcome[1] in list(attempt_table_worst_case.keys()):
+        attempt_table_worst_case[outcome[1]] += 1
     else:
-        attemptTableWorstCase[outcome[1]] = 1
+        attempt_table_worst_case[outcome[1]] = 1
 
 end = time.time()
 
 print(f"finished worst case in {end - start} seconds.")
-print(f"Average: {totalAttempts/len(possibleList)}.")
-print(f"Attempt count: {attemptTableWorstCase}.")
+print(f"Average: {total_attempts/len(possible_list)}.")
+print(f"Attempt count: {attempt_table_worst_case}.")
 print("\nDone.")

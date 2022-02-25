@@ -1,81 +1,81 @@
 import json
 import random
 
-def createAllPossible(colors):
+def create_all_possible(colors):
     """
     Generen van alle mogelijken antwoorden.
     """
 
     possibilities = list()
 
-    for firstColor in range(len(colors)):
-        for secondColor in range(len(colors)):
-            for thirdColor in range(len(colors)):
-                for forthColor in range(len(colors)):
-                    possibilities.append([colors.copy()[firstColor],colors.copy()[secondColor],colors.copy()[thirdColor],colors.copy()[forthColor]])
+    for first_color in range(len(colors)):
+        for second_color in range(len(colors)):
+            for third_color in range(len(colors)):
+                for forth_color in range(len(colors)):
+                    possibilities.append([colors.copy()[first_color],colors.copy()[second_color],colors.copy()[third_color],colors.copy()[forth_color]])
 
     return possibilities
 
-def giveAnswer(guess,answer):
+def give_answer(guess,answer):
     """
     functie die 2 lijsten vergelijkt.
     Als de lijsten hetzelfde item op dezelfde locatie hebben, zwart optellen en de items uit lijst halen.
     Daarna checken of andere items nog in de lijsten overeen komen en aantal bijhouden in door wit op te tellen.
     Na hele lijst gechecked te hebben return de waarde van zwart en wit.
     """
-    Black = 0
-    White = 0
-    answerCopy = answer.copy()
-    guessCopy = guess.copy()
+    black = 0
+    white = 0
+    answer_copy = answer.copy()
+    guess_copy = guess.copy()
 
-    for i in range(len(guessCopy)):
-        if answerCopy[i] == guessCopy[i]:
-            Black += 1
-            answerCopy[i] = "Password Checked"
-            guessCopy[i] = "Guess Checked"
+    for i in range(len(guess_copy)):
+        if answer_copy[i] == guess_copy[i]:
+            black += 1
+            answer_copy[i] = "Password Checked"
+            guess_copy[i] = "Guess Checked"
 
-    for i in range(len(guessCopy)):        
-        if guessCopy[i] in answerCopy:
-            White += 1
-            answerCopy[answerCopy.index(guessCopy[i])] = "Password Checked"
-            guessCopy[i] = "Guess Checked"
+    for i in range(len(guess_copy)):        
+        if guess_copy[i] in answer_copy:
+            white += 1
+            answer_copy[answer_copy.index(guess_copy[i])] = "Password Checked"
+            guess_copy[i] = "Guess Checked"
     
-    return Black, White
+    return black, white
 
-def generateNextMoveMostParts(leftOverPossibilitiesMatrix):
+def generate_next_move_most_parts(left_over_possibilities_matrix):
     """
     Functie om grootste dictionary uit een lijst te halen.
     Return het corresponderende antwoord.
     """
     
-    currentLongest = ""
+    current_longest = ""
 
-    for item in leftOverPossibilitiesMatrix:
-        if len(item[1]) > len(currentLongest):
-            currentLongest = item[1]
+    for item in left_over_possibilities_matrix:
+        if len(item[1]) > len(current_longest):
+            current_longest = item[1]
             export = item[0]
 
     return export
 
-def generateNextMoveWorstCase(leftOverPossibilitiesMatrix):
+def generate_next_move_worst_case(left_over_possibilities_matrix):
     """
     Functie om te bepalen welke lijst het kleinste getal bezit die in de lijst het grootst is.
     return het antwoord wat correspondeert met de bepaalde lijst.
     """
 
-    worstCase = len(leftOverPossibilitiesMatrix)
+    worst_case = len(left_over_possibilities_matrix)
 
-    for item in leftOverPossibilitiesMatrix:
-        highestValue = max(item[1].values())
+    for item in left_over_possibilities_matrix:
+        highest_value = max(item[1].values())
 
-        if highestValue < worstCase:
-            worstCase = highestValue
+        if highest_value < worst_case:
+            worst_case = highest_value
     
-    for item in leftOverPossibilitiesMatrix:
-        if worstCase == max(item[1].values()):
+    for item in left_over_possibilities_matrix:
+        if worst_case == max(item[1].values()):
             return item[0]
 
-def generateMatrix(leftOverPossibilities,n):
+def generate_matrix(left_over_possibilities,n):
     """
     Functie die een dictionary genereerd met alle mogelijke overgebleven responses van de giveAnswer functie van alle overgebleven antwoorden.
     Omdat bij de eerste poging alle antwoorden nog mogelijk zijn zal deze altijd hetzelfde zijn.
@@ -83,32 +83,32 @@ def generateMatrix(leftOverPossibilities,n):
     """
     
     if n != 1:
-        possibilityMatrix = list()
+        possibility_matrix = list()
         
-        for item in leftOverPossibilities:
-            dictOfPossibilities = dict()
+        for item in left_over_possibilities:
+            dict_of_possibilities = dict()
 
-            for each in leftOverPossibilities:
-                givenResponse = str(giveAnswer(item,each))
+            for each in left_over_possibilities:
+                given_response = str(give_answer(item,each))
 
-                if givenResponse in list(dictOfPossibilities.keys()):
-                    dictOfPossibilities[givenResponse] += 1
+                if given_response in list(dict_of_possibilities.keys()):
+                    dict_of_possibilities[given_response] += 1
             
                 else:
-                    dictOfPossibilities[givenResponse] = 1
+                    dict_of_possibilities[given_response] = 1
 
-            possibilityMatrix.append([item,dictOfPossibilities])
+            possibility_matrix.append([item,dict_of_possibilities])
 
     else:
 
         with open("firstMatrix.json", "r") as JSONFile:
-            possibleMatrixResponse = json.load(JSONFile)
+            possible_matrix_response = json.load(JSONFile)
 
-        possibilityMatrix = possibleMatrixResponse
+        possibility_matrix = possible_matrix_response
     
-    return possibilityMatrix
+    return possibility_matrix
     
-def MakeGuess(leftOverPossibilities, password, gameMode = "", n = 1):
+def make_guess(left_over_possibilities, password, game_mode = "", n = 1):
     """
     Functie met meerdere delen.
     
@@ -129,30 +129,30 @@ def MakeGuess(leftOverPossibilities, password, gameMode = "", n = 1):
     de huidige gamemode en het aantal beurten.
     """
     
-    listOfAnswers = list()
+    list_of_answers = list()
 
-    if gameMode.lower() == "worst case":
-        possibilityMatrix = generateMatrix(leftOverPossibilities,n)
-        answerToGuess = generateNextMoveWorstCase(possibilityMatrix)
+    if game_mode.lower() == "worst case":
+        possibility_matrix = generate_matrix(left_over_possibilities,n)
+        answer_to_guess = generate_next_move_worst_case(possibility_matrix)
 
-    elif gameMode.lower() == "most parts":
-        possibilityMatrix = generateMatrix(leftOverPossibilities,n)
-        answerToGuess = generateNextMoveMostParts(possibilityMatrix)
+    elif game_mode.lower() == "most parts":
+        possibility_matrix = generate_matrix(left_over_possibilities,n)
+        answer_to_guess = generate_next_move_most_parts(possibility_matrix)
     
-    elif gameMode.lower() == "simple":
-        answerToGuess = leftOverPossibilities[0]
+    elif game_mode.lower() == "simple":
+        answer_to_guess = left_over_possibilities[0]
         
     else:
-        answerToGuess = random.choice(leftOverPossibilities)
+        answer_to_guess = random.choice(left_over_possibilities)
 
-    Response = giveAnswer(answerToGuess,password)
+    response = give_answer(answer_to_guess,password)
 
-    if Response == (4,0):
-        return answerToGuess,n
+    if response == (4,0):
+        return answer_to_guess,n
 
-    for item in leftOverPossibilities:
-        checkResponse = giveAnswer(item,answerToGuess)
-        if Response == checkResponse:
-            listOfAnswers.append(item)
+    for item in left_over_possibilities:
+        check_response = give_answer(item,answer_to_guess)
+        if response == check_response:
+            list_of_answers.append(item)
 
-    return MakeGuess(listOfAnswers, password, gameMode, n+1)
+    return make_guess(list_of_answers, password, game_mode, n+1)
